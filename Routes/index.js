@@ -1,10 +1,11 @@
 const express = require('express');
 
 const router = express.Router();
-
+require("dotenv").config({ path: `${__dirname}/.env` });
+let secret = process.env.secret;
 const homeController = require('../Controllers/index');
-
-router.post('/home',homeController.start);
+const auth = require("../middleware/Auth");
+router.post('/homes',auth, homeController.start);
 
 router.get('/tea', homeController.getAllTea);
 router.post('/tea', homeController.newTea);

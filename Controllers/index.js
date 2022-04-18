@@ -3,6 +3,7 @@ const helper = require('./helper');
 let str = "";
 
 const start = (req,res, next) =>{
+    console.log(":skimp")
     // res.json([
     //     {message:"THIS is Homepage"},
     //     {message:"THIS is Homepage"},
@@ -18,6 +19,7 @@ const start = (req,res, next) =>{
     // res.json(str);
     const array1 = [{"name":"Phillip","phone":"07035666498"}, {"name":"Phillip","Phone":"07012345678"}, {"name":"Toyin","Phone":"07035666498"}];
     array1.forEach(element => console.log(element.name));
+    res.json(array1);
 };
 
 
