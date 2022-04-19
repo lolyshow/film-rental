@@ -1,7 +1,5 @@
 const dotenv = require("dotenv").config({ path: `${__dirname}/../.env` });
 const mongodb  = require("mongodb").MongoClient;
-
-
 mongodb.connect(process.env.CONNECTIONSTRING, async function(err, client){
     if (err) throw err;
         console.log("Database created!");

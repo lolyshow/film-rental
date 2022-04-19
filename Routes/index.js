@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 require("dotenv").config({ path: `${__dirname}/.env` });
-let secret = process.env.secret;
+
 const homeController = require('../Controllers/index');
 const auth = require("../middleware/Auth");
 router.post('/homes',auth, homeController.start);

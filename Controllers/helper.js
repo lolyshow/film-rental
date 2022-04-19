@@ -31,6 +31,10 @@ function AuthFailureResponse(
     return responseData;
 }
 
+function MissingFieldResponse(message){
+
+}
+
 
 
 module.exports = {

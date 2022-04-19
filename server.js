@@ -1,17 +1,12 @@
 const express = require('express');
 
-const routes = require('./routes/index');
-
-const authRoutes = require('./routes/auth');
+const authRoutes = require('./Routes/Auth');
 
 const mongoose = require("mongoose");
-const { connect } = require('./routes/index');
 
 require("dotenv").config({ path: `${__dirname}/.env` });
 
 const app = express();
-
-
 mongoose.connect(process.env.CONNECTIONSTRING,(err,connected)=>{
 
     if(err){
@@ -25,7 +20,7 @@ mongoose.connect(process.env.CONNECTIONSTRING,(err,connected)=>{
 
 app.use(express.json());
 
-app.use("/user",routes);
+// app.use("/user",routes);
 
 app.use("/api/",authRoutes);
 
