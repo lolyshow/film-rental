@@ -1,10 +1,9 @@
-const express= require('express');
-const mongoose= require('mongoose');
 let bcrypt = require('bcryptjs');
 const User= require('../models/User');
 const { Validator } = require('node-input-validator');
+require("dotenv").config({ path: `../${__dirname}/.env` });
 const jwt = require("jsonwebtoken");
-const { AuthSuccessResponse, AuthFailureResponse } = require('./helper');
+const { AuthSuccessResponse, AuthFailureResponse } = require('../helper/helper');
 const config = process.env.secret;
 
 const Register =async(req,res)=>{
@@ -14,48 +13,55 @@ const Register =async(req,res)=>{
         email: 'required|email',
         password: 'required',
         location:'required'
-      });
+    });
+    let validationFailed = true;
     
-      v.check().then((matched) => {
-        if (!matched) {
-          res.status(422).send(v.errors);
-        }
-      });
-    
-   
-    // console.log("hiiiiiii",hashedPassword)
-    const {email,password,location,name} = req.body;
-    try {
-      const oldUser = await User.findOne({email});
-      if(!oldUser){
-        let hashedPassword = bcrypt.hashSync(password, 8);
-        const newUser = new User({
-            name:name,
-            email:email,
-            password:hashedPassword,
-            location:location,
-        });
-
-        try{
-          const token = jwt.sign(
-            { user_id: newUser._id, email },
-            process.env.secret,
-            {
-              expiresIn: "2h",
-            }
-          );
-          await newUser.save();
-            res.status(200).json(AuthSuccessResponse(newUser,token));
-          }
-          catch(error) {
-          res.status(400).json({ message : error.message});
-        }
+    await v.check().then((matched) => {
+      if (!matched) {
+        validationFailed = true;
       }else{
-        res.status(202).json({ message : "This email "+email+" already exists"});
+        validationFailed = false;
       }
-    }catch(error){
-      console.log(error)
-      res.status(400).json({ message : "Technical Error. Please try again later"});
+    });
+
+    if(validationFailed === true){
+      res.status(422).send({...v.errors, status:303});
+    }
+    else{
+
+      try {
+        const {email,password,location,name} = req.body;
+        const oldUser = await User.findOne({email});
+        if(!oldUser){
+          let hashedPassword = bcrypt.hashSync(password, 8);
+          const newUser = new User({
+              name:name,
+              email:email,
+              password:hashedPassword,
+              location:location,
+          });
+
+          try{
+            const token = jwt.sign(
+              { user_id: newUser._id, email },
+              config,
+              {
+                expiresIn: "2h",
+              }
+            );
+            await newUser.save();
+              return res.status(200).json(AuthSuccessResponse(newUser,token));
+            }
+            catch(error) {
+            return res.status(400).json({ message : error.message});
+          }
+        }else{
+          return res.status(202).json({ message : "This email "+email+" already exists"});
+        }
+      }catch(error){
+        // console.log(error)
+        return res.status(400).json({ message : "Technical Error. Please try again later"});
+      }
     }
 }
 

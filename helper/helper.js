@@ -31,6 +31,17 @@ function AuthFailureResponse(
     return responseData;
 }
 
+
+function ResponsePayload(status=400,message="Technical Error",data = []){
+    let responseData = {
+        "message":message,
+        "status":status,
+        "data":data,
+        
+    }
+    return responseData;
+}
+
 function MissingFieldResponse(message){
 
 }
@@ -40,5 +51,6 @@ function MissingFieldResponse(message){
 module.exports = {
     add,
     AuthSuccessResponse,
-    AuthFailureResponse
+    AuthFailureResponse,
+    ResponsePayload
 };

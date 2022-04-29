@@ -1,21 +1,23 @@
 const jwt = require("jsonwebtoken");
-
-const config = process.env.secret;
-
+const { secretKey } = require("../constants");
+require("dotenv").config({ path: `..${__dirname}/.env` });
+const { AuthFailureResponse } = require("../helper/helper");
 const verifyToken = (req, res, next) => {
   const token =
     req.body.token || req.query.token || req.headers["x-access-token"];
 
   if (!token) {
-    return res.status(403).send("A token is required for authentication");
+     
+    return res.status(401).send(AuthFailureResponse(300,"A token is required for authentication"));
+  }else{
+    try {
+      const decoded = jwt.verify(token, secretKey);
+      req.user = decoded;
+    } catch (err) {
+      return res.status(401).send(AuthFailureResponse(401,"Invalid Token"));
+    }
+    return next();
   }
-  try {
-    const decoded = jwt.verify(token, config);
-    req.user = decoded;
-  } catch (err) {
-    return res.status(401).send("Invalid Token");
-  }
-  return next();
 };
 
 module.exports = verifyToken;
