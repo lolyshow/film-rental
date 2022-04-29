@@ -55,14 +55,28 @@ const CreateProduct =async(req,res)=>{
 const AllProducts =async(req,res)=>{
 
     try{
-        Product.find({},(error,result)=>{
-            if(error){
-                console.log(error)
-                res.status.json(ResponsePayload())
-            }else{
-                res.status(200).json(ResponsePayload(200,"Success",result))
-            }
-        })
+        let {size,page} = req.body;
+        if(!page){
+            page = 1;
+        }
+
+        if(!size){
+            size=8;
+        }
+
+        const limit  = parseInt(size);
+        const skip = (page -1) * limit;
+        // await Product.find({},(error,result)=>{
+        //     if(error){
+        //         console.log(error)
+        //         res.status.json(ResponsePayload())
+        //     }else{
+        //         res.status(200).json(ResponsePayload(200,"Success",result))
+        //     }
+        // }).limit(limit).skip(skip) //with pagination
+        
+         const user = await Product.find().limit(limit).skip(skip)
+         res.status(200).json(ResponsePayload(200,"Success",user))  
     }
     catch(error){
         console.log(error)
