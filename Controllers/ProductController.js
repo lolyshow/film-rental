@@ -1,9 +1,6 @@
-const express= require('express');
-const mongoose= require('mongoose');
-const User= require('../models/User');
 const { Validator } = require('node-input-validator');
 const Product = require('../models/Product');
-const { AuthSuccessResponse,ResponsePayload } = require('../helper/helper');
+const {ResponsePayload } = require('../helper/helper');
 const CreateProduct =async(req,res)=>{
 
     const v = new Validator(req.body, {

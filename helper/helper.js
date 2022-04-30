@@ -42,9 +42,6 @@ function ResponsePayload(status=400,message="Technical Error",data = []){
     return responseData;
 }
 
-function MissingFieldResponse(message){
-
-}
 
 
 
